@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert information</title>
+</head>
+
+<body>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit" id="submit">SEND</button>
+
+    <script>
+        const nameInput = document.querySelector('#name');
+        const password = document.querySelector('#password');
+        const submit = document.querySelector('#submit')
+
+        let asyncFetch = async () => {
+            let res = await fetch("http://localhost:3001/user", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ a: nameInput.value, b: password.value })
+            })
+        }
+
+        submit.addEventListener('click', asyncFetch)
+    </script>
+
+</body>
+
+</html>
