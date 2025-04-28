@@ -9,26 +9,44 @@
 
 <body>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required><br><br>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" required><br><br>
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required><br><br>
-    <button type="submit" id="submit">SEND</button>
+    <button type="submit" id="submit">Register</button>
+    <button type="submit" id="submit2">Login</button>
 
     <script>
-        const nameInput = document.querySelector('#name');
+        const email = document.querySelector('#email');
         const password = document.querySelector('#password');
-        const submit = document.querySelector('#submit')
+        const submit = document.querySelector('#submit');
+        const submit2 = document.querySelector('#submit2');
 
         let asyncFetch = async () => {
             let res = await fetch("http://localhost:3001/user", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
-                body: JSON.stringify({ a: nameInput.value, b: password.value })
+                body: JSON.stringify({ a: email.value, b: password.value })
             })
         }
 
-        submit.addEventListener('click', asyncFetch)
+        let asyncFetchLogin = async () => {
+            let res = await fetch("http://localhost:3001/login", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ email: email.value, password: password.value })
+            });
+            
+            let data = await res.json();
+            if (data.success) {
+                alert("Login successful!");
+            } else {
+                alert("Invalid email or password.");
+            }
+        };
+
+        submit.addEventListener('click', asyncFetch);
+        submit2.addEventListener('click', asyncFetchLogin);
     </script>
 
 </body>
