@@ -16,11 +16,21 @@
     <button type="submit" id="submit">Register</button>
     <button type="submit" id="submit2">Login</button>
 
+    <br><br>
+
+    <!-- Ovdje dodajemo opciju za postavljanje admina -->
+    <label for="target-email">Email korisnika za dodjelu admin privilegija:</label>
+    <input type="text" id="target-email" name="target-email" required><br><br>
+    <button type="button" id="set-admin-button">Set Admin</button>
+
     <script>
         const email = document.querySelector('#email');
         const password = document.querySelector('#password');
         const submit = document.querySelector('#submit');
         const submit2 = document.querySelector('#submit2');
+
+        const targetEmail = document.querySelector('#target-email'); // Unos za target korisnika
+        const adminButton = document.querySelector('#set-admin-button'); // Dugme za postavljanje admina
 
         let asyncFetch = async () => {
             let res = await fetch("http://localhost:3001/user", {
@@ -28,7 +38,7 @@
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ a: email.value, b: password.value })
             })
-        }
+        };
 
         let asyncFetchLogin = async () => {
             let res = await fetch("http://localhost:3001/login", {
@@ -40,10 +50,29 @@
             let data = await res.json();
             if (data.success) {
                 alert("Login successful!");
+                // Ako je korisnik admin, prikaži dugme za postavljanje admina
+                if (data.isAdmin) {
+                    adminButton.style.display = "block";  // Prikazuje dugme za admin privilegije
+                }
             } else {
                 alert("Invalid email or password.");
             }
         };
+
+        // Dodavanje admin privilegija
+        adminButton.addEventListener('click', async () => {
+            const res = await fetch("http://localhost:3001/setAdmin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    currentUserEmail: email.value,  // Trenutni admin email
+                    targetEmail: targetEmail.value   // Email korisnika kojem se dodaje admin
+                })
+            });
+            
+            const data = await res.json();
+            alert(data.message);  // Prikazuje poruku
+        });
 
         submit.addEventListener('click', asyncFetch);
         submit2.addEventListener('click', asyncFetchLogin);
